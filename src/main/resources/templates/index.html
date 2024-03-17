@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+#calendar {
+	min-height:800px;
+	padding: 10px;
+	margin-top: 30px;
+}
+
+</style>
+
+<meta charset="UTF-8">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/static/css/style.css}" />
+<script
+	src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+	<script src='fullcalendar/core/locales/es.global.js'></script>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var calendarEl = document.getElementById('calendar');
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+			initialView : 'dayGridMonth',
+			locale: 'ko',
+			selectable: true
+			
+		});
+		calendar.render();
+	});
+</script>
+
+
+
+<title>[나만의 기록공간] 다이어리</title>
+</head>
+<body style="min-width: 1080px;">
+	<div th:replace="~{nav/nav::nav}"></div>
+	<div class="container-fluid " style="border-top: solid white 1px">
+		<div class="row">
+			<div th:replace="~{aside/aside::aside}"></div>
+
+			<!-- 2번째 화면 -->
+
+			<!-- 2-1화면 -->
+			<div class="col-5" style="background-color: white; margin: 10px;">
+
+				<div class="row" style="margin: 10px; margin: 30px;">
+
+					<div class="list-group " style="min-height: 300px;">
+
+						<a href="#"
+							class="list-group-item list-group-item-action disabled text-center fw-bold bg-secondary text-white">중요
+							메모</a>
+
+						<th:block th:if="${starCnt  != 0}">
+							<div th:each="one : ${pageStarList}">
+								<a th:href="@{/memo/detail(id=${one.id})}"
+									class="list-group-item list-group-item-action"><span class="me-2"><img
+						th:src="@{/static/image/source/star2.png}" style="width: 18px;"></span>[<span
+									 th:if="${one.folder!=null}"
+									 th:text="${one.folder.name}"></span><span
+									th:unless="${one.folder!=null}" th:text="'기본 폴더'"></span>]
+									<span class="ms-2" th:text="${one.title}">제목</span></a>
+							</div>
+						</th:block> 
+						<th:block th:unless="${starCnt != 0}">
+							<li class="list-group-item disabled text-center"
+								aria-disabled="true">현재 등록된 중요 게시글이 없습니다.</li>
+						</th:block>
+
+					</div>
+					<!-- 페이지네이션 -->
+					<th:block th:if="${starCnt  != 0}">
+
+						<nav aria-label="Page navigation example" class="text-center">
+							<div class="text-center">
+								<ul class="pagination justify-content-center ">
+									<!-- 이전 영역 -->
+									<li class="page-item"><a class="page-link"
+										th:href="@{/index?(page=${starCurrentPage}-1)}"
+										aria-label="Previous"
+										th:classappend="${!pageStarList.hasPrevious} ? 'disabled'">
+											<span aria-hidden="true">&laquo;</span>
+									</a></li>
+									<!-- 찐 반복문 영역 -->
+									<li th:each="page: ${#numbers.sequence(1, starTotalPage)}"
+										class="page-item"
+										th:classappend="${page == starCurrentPage} ? 'active'">
+										<a th:text="${page}" class="page-link"
+										th:href="@{/index?(page=${page},p=${recentCurrentPage})}"></a>
+									</li>
+
+									<!-- 다음영역 -->
+									<li class="page-item"><a class="page-link"
+										th:href="@{/index?(page=${starCurrentPage}+1)}"
+										aria-label="Next"
+										th:classappend="${!pageStarList.hasNext} ? 'disabled'"> <span
+											aria-hidden="true">&raquo;</span>
+									</a></li>
+								</ul>
+							</div>
+
+						</nav>
+
+					</th:block>
+				</div>
+				<!-- 여기는 최신 등록 영역이닷 -->
+
+
+
+				<div class="row" style="margin: 10px; margin: 30px;">
+
+					<div class="list-group " style="min-height: 300px;">
+
+						<a href="#"
+							class="list-group-item list-group-item-action disabled text-center fw-bold bg-secondary text-white">최신
+							등록 게시물</a>
+
+						<th:block th:if="${allCnt!= 0}">
+							<div th:each="one : ${pageRecentRegistList}">
+								<a th:href="@{/memo/detail(id=${one.id})}"
+									class="list-group-item list-group-item-action"><span class="ms-2"></span>[<span 
+									th:if="${one.folder!=null}"th:text="${one.folder.name}"></span><span
+									th:unless="${one.folder!=null}" th:text="'기본 폴더'" ></span>]
+									<span th:text="${one.title} " class="ms-2">제목</span></a>
+							</div>
+						</th:block>
+						<th:block th:unless="${allCnt != 0}">
+							<li class="list-group-item disabled text-center"
+								aria-disabled="true">현재 등록된 중요 게시글이 없습니다.</li>
+						</th:block>
+
+
+					</div>
+					<!-- 페이지네이션 -->
+					<th:block th:if="${allCnt != 0}">
+						<nav aria-label="Page navigation example" class="text-center">
+
+							<ul class="pagination justify-content-center">
+								<!-- 이전 영역 -->
+								<li class="page-item"><a class="page-link"
+									th:href="@{/index?(p=${recentCurrentPage}-1)}"
+									aria-label="Previous"
+									th:classappend="${!pageRecentRegistList.hasPrevious} ? 'disabled'">
+										<span aria-hidden="true">&laquo;</span>
+								</a></li>
+								<!-- 찐 반복문 영역 -->
+								<li th:each="p: ${#numbers.sequence(1, recentTotalPage)}"
+									class="page-item"
+									th:classappend="${p == recentCurrentPage} ? 'active'"><a
+									th:text="${p}" class="page-link"
+									th:href="@{/index?(p=${p},page=${starCurrentPage})}"></a></li>
+
+								<!-- 다음영역 -->
+								<li class="page-item"><a class="page-link"
+									th:href="@{/index?(p=${recentCurrentPage}+1)}"
+									aria-label="Next"
+									th:classappend="${!pageRecentRegistList.hasNext} ? 'disabled'">
+										<span aria-hidden="true">&raquo;</span>
+								</a></li>
+							</ul>
+
+						</nav>
+					</th:block>
+				</div>
+			</div>
+	
+		<!-- 2-2화면 (달력띄우기)-->
+		<div class="col-4" style="background-color: white; margin: 10px;">
+			<div id='calendar'></div>
+			</div>
+
+
+
+
+		</div>
+
+</div>
+
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

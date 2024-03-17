@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<style>
+</style>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/static/css/style.css}" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+<title>[나만의 기록공간] 다이어리</title>
+</head>
+<body>
+	<div th:replace="~{nav/nav::nav}"></div>
+	<div class="container-fluid " style="border-top: solid white 1px">
+		<div class="row">
+			<div th:replace="~{aside/aside::aside}"></div>
+
+
+			<div class="d-flex flex-column p-3 col-9" th:each="one:${memo}"
+				style="background-color: white;">
+				<!-- 버튼 -->
+				<div>
+					<!-- 수정 버튼 -->
+
+
+					<a th:href="@{/memo/modifyMemo(memoId=${memo.id})}"><span><button
+								type="button" class="btn btn-secondary ms-2 btn-sm"
+								style="float: right;">수정</button></span></a>
+
+					<!-- 삭제 버튼 -->
+					<form th:action="@{/memo/move/bin}" method="post">
+						<input type="hidden" name="_method" value="patch" /> <input
+							type="hidden" name="memoId" th:value="${one.id}" /> <span><button
+								class="btn btn-secondary  ms-2 btn-sm" style="float: right;">삭제</button></span>
+					</form>
+				</div>
+				<div class="d-flex flex-column  m-2 p-2 "
+					style="border-bottom: 2px solid gray">
+
+					<div class="fs-2 fw-bold p-2 justify-content-between" >
+						<span th:if="${one.folder!=null}" > [<span
+							th:text="${memo.folder.name}" style="font-size: 30px; font-weight: bold;"></span>]
+						</span> <span th:unless="${one.folder!=null}">[<span
+							th:text="'기본폴더'" style="font-size: 30px; font-weight: bold;"></span>]
+						</span> <span th:text="${one.title}" style="font-size: 30px;" class="ms-2"></span> <span th:if="${one.star}">
+							<span> <i class="bi bi-star-fill"></i></span>
+						</span> <span th:unless="${one.star}"> <span> <i
+								class="bi bi-star"></i></span>
+						</span>
+
+					</div>
+
+					<div class="fs-6 ms-1 text-end">
+						작성일 : <span
+							th:text="${#temporals.format(one.writeAt, 'yyyy-MM-dd')}"></span>
+
+
+					</div>
+				</div>
+
+				<div class="m-2 p-2 fs-5" style="width: 100%; height: 20em;">
+					<div th:text="${one.body}" style="padding: 30px; font-size: 25px"></div>
+				</div>
+				<div class="ms-3" th:if="${!#lists.isEmpty(img)}">
+					<h4>첨부 사진</h4>
+				</div>
+				<div class="m-2 p-2 d-flex"
+					style="height: 300px; overflow-x: scroll; border-top: solid gray 2px;"
+					th:if="${!#lists.isEmpty(img)}">
+					<img th:each="one:${img}" th:src="@{/{url}(url=${one.url})}"
+						style="width: 200px; height: 200px;"
+						class="object-fit-none border rounded">
+
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

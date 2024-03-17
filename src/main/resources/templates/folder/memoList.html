@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/static/css/style.css}" />
+<title>[나만의 기록공간] 다이어리</title>
+</head>
+<body>
+	<div class="container-fluid " style="border-top: solid white 1px">
+		<div class="row">
+			<div th:replace="~{aside/aside::aside}"></div>
+			<div th:replace="~{nav/nav::nav}"></div>
+			<div th:if="${#lists.isEmpty(memoList)}">
+				<ul>
+					<li th:each="one:${noFolderMemoList}"><span
+						th:text="${one.title}"></span></li>
+				</ul>
+			</div>
+			<div th:unless="${#lists.isEmpty(memoList)}"></div>
+
+			<ul>
+				<li th:each="one:${memoList}"><span th:text="${one.title}"></span>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/static/css/style.css}"/>
+<title>[나만의 기록공간] 다이어리</title>
+</head>
+<body style="min-width:1080px;">
+	<div th:replace="~{nav/nav::nav}"></div>
+	
+	<div class="container-fluid " style="border-top:solid white 1px ">
+		<div class="row">
+			<div class="container-fluid " style="border-top:solid white 1px ">
+		<div class="row">
+			<div th:replace="~{aside/aside::aside}"></div>
+			<!-- 2번째 화면 -->
+			
+			<div class="col-10 p-2">
+			
+			<div  class="m-2 p-2" th:if="${#lists.isEmpty(binAll)}" style="background-color: white; width: 90%; height: 100%"  >
+				 	<h1 class="text-center fw-bold" style="padding:400px">🗑️휴지통이 비어있습니다🗑️</h1>
+				 	 </div>
+		
+		<div class="m-2 p-2" th:unless="${#lists.isEmpty(binAll)}">
+					   <form method="post" id="form" th:action="@{/bin}">
+					  	 <input type="hidden" name="_method" id="method"/>
+							<div class="d-flex justify-content-end aling-items-center">
+								<div class="p-2">
+									<button type="submit" class="btn btn-secondary btn-sm" id="rollBackBtn" >복 원</button>
+								</div>
+								<div class="p-2">
+									<button type="submit" class="btn  btn-secondary btn-sm" id="deleteBtn">영구 삭제</button>
+								</div>
+							</div>
+						    <table class="table table-hover text-center">
+						        <thead>
+						          <tr>					         
+						            <th scope="col" style="width:40%">제목</th>
+						            <th scope="col" style="width:20%">작성일</th>  
+						            <th scope="col" style="width:20%">삭제일</th>  
+						            <th scope="col" ></th>
+						          </tr>
+						        </thead>
+						        <tbody>
+						          <tr th:each="memo:${binAll}">
+						            
+						            <td th:text="${memo.title}"></td>
+						            <td th:text="${#temporals.format(memo.writeAt, 'yyyy-MM-dd')}"></td>
+						          	<td th:text="${#temporals.format(memo.deleteAt, 'yyyy-MM-dd')}"></td>
+						            <td scope="row"><input type="checkbox" th:value="${memo.id}" name="memoId"></td>
+						          </tr>
+						        
+						        </tbody>
+						      </table>
+						      
+						</form>
+	  				</div>
+				
+		</div>
+		</div>
+		</div>
+		</div>
+	
+	
+	
+	</div>
+	
+	<script>
+	document.querySelector("#rollBackBtn").addEventListener("click",function () {
+		
+		const $form = document.querySelector("#form");
+		
+		
+		const $method = document.querySelector("#method");
+		$method.value="patch";
+		 
+	});
+	
+	document.querySelector("#deleteBtn").addEventListener("click",function () {
+			
+			const $form = document.querySelector("#form");
+			
+			
+			const $method = document.querySelector("#method");
+			$method.value="delete";	 
+		});
+		
+	
+	
+	</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

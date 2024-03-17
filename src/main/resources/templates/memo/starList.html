@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/static/css/style.css}" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+<style>
+select {
+	border: none;
+	height: 30px;
+	width: 200px;
+}
+</style>
+<title>[나만의 기록공간] 다이어리</title>
+</head>
+<body style="min-width: 1080px;">
+	<div th:replace="~{nav/nav::nav}"></div>
+
+
+	<div class="container-fluid " style="border-top: solid white 1px">
+		<div class="row">
+			<div class="container-fluid " style="border-top: solid white 1px">
+				<div class="row">
+					<div th:replace="~{aside/aside::aside}"></div>
+					<!-- 2번째 화면 -->
+
+					<div class="col-10 p-2">
+
+							
+			<div  class="m-2 p-2" th:if="${#lists.isEmpty(all)}" style="background-color: white; width: 90%; height: 100%"  >
+				 	<h2 class="text-center fw-bold" style="padding:400px">⭐중요 게시글이 없습니다.⭐</h2>
+				 	 </div>
+		
+
+						<div class="m-2 p-2" th:unless="${#lists.isEmpty(all)}">
+
+							<div class="d-flex justify-content-start aling-items-center">
+								<form th:action="@{/memo/folder}" method="get">
+									<div class="mb-2">
+
+										<select name="folderId" id="selectBox"
+											onchange="this.form.submit()">
+											<option selected disabled>폴더 선택</option>
+											<option value="">기본폴더</option>
+											<option th:each="one : ${folder}" th:value="${one.id}"
+												th:text="${one.name}"></option>
+										</select>
+
+									</div>
+								</form>
+
+
+							</div>
+							<form th:action="@{/memo/move/bin}" method="post" id="form">
+								<input type="hidden" name="_method" id="method" />
+								<table class="table table-hover text-center">
+									<thead>
+										<tr>
+											<th scope="col" style="width: 10%"></th>
+											<th scope="col" style="width: 40%">제목</th>
+											<th scope="col" style="width: 20%">작성일</th>
+											<th scope="col" style="width: 20%">폴더명</th>
+											<th scope="col"><span class="p-2">
+													<button type="submit"
+														style="border: none; background: none;" id="deleteBtn">
+														<img th:src="@{/static/image/source/trash.png}"
+															style="width: 18px;" class="me-1">삭제
+													</button>
+											</span></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="memo:${starList}">
+											<td th:if="${memo.star}"><span> <i
+													class="bi bi-star-fill"></i></span></td>
+											<td th:unless="${memo.star}"><span> <i
+													class="bi bi-star"></i></span></td>
+
+											<td><a th:href="@{/memo/detail(id=${memo.id})}"
+												th:text="${memo.title}"></a></td>
+
+
+											<td
+												th:text="${#temporals.format(memo.writeAt, 'yyyy-MM-dd')}"></td>
+
+											<td th:if="${memo.folder != null}"><span
+												th:text="${memo.folder.name}"></span></td>
+											<td th:unless="${memo.folder != null}"><span
+												th:text="'기본 폴더'"></span></td>
+											<td scope="row"><input type="checkbox"
+												th:value="${memo.id}" name="memoId"></td>
+
+										</tr>
+
+									</tbody>
+								</table>
+
+							</form>
+						</div>
+
+
+
+					</div>
+
+				</div>
+
+
+			</div>
+
+		</div>
+	</div>
+
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
